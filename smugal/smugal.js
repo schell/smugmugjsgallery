@@ -9,7 +9,8 @@
 
 var smugal = function (options) {
     // options
-    var testing = options.testing || true;
+    var testing = options.testing || false;
+    var albumUrl = options.albumUrl || '';
     var albumId = options.albumId || '11397881';
     var albumKey = options.albumKey || 'MYoeS';
     var maxSizeOfDisplayedImage = options.maxSizeOfDisplayedImage || 3;
@@ -31,7 +32,14 @@ var smugal = function (options) {
     var mainDiv = new Element('div', {
         id : 'mainDiv'
     });
-
+    //--------------------------------------
+    //  Functions
+    //--------------------------------------
+    function log (msg) {
+        if (window.console) {
+            console.log(msg);
+        }
+    }
     function transition () {
         var imgs = mainDiv.getElements('img');
         var out = transition.ndx;
@@ -71,7 +79,7 @@ var smugal = function (options) {
     
         var anotherImageLoaded = function (thatId) {
             var id = this.id || thatId;
-            console.log(id);
+            log(id);
             var status = imgStatus[id];
             imgStatus[id] = 'complete';
             if (status === 'waiting') {
@@ -90,7 +98,7 @@ var smugal = function (options) {
             imgStatus[id] = 'loading';
             var maxSize = galleryModel.images[i].urls.length - 1;
             var size = maxSize >= maxSizeOfDisplayedImage ? maxSizeOfDisplayedImage : maxSize;
-            console.log(size);
+            log(size);
             var src = galleryModel.images[i].urls[size];
             var img = new Element('img', {
                 src : src, 
@@ -145,7 +153,7 @@ var smugal = function (options) {
     window.addEvent('domready', function (e) {
         var feedReq = new Request({
             method : 'get',
-            url : 'http://smugmuggallery.local/feed.mg',
+            url : albumUrl,
             onSuccess : function (text, xml) {
                 setup(text);
             }, 

@@ -15,8 +15,7 @@ body, html {
 }
 /* the main gallery div */
 #mainDiv {
-}
-/* the main image */
-#mainImg {
-	
+	position : absolute;
+	width : 100%;
+	height : 100%;
 }

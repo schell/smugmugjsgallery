@@ -9,15 +9,23 @@
 
 var smugal = function (options) {
     // options
+    var apiUrl = 'http://api.smugmug.com/services/api/json/1.2.2/';
     var testing = options.testing || false;
+    
+    var targetId = options.targetId || false;
     var albumUrl = options.albumUrl || '';
     var albumId = options.albumId || '11397881';
     var albumKey = options.albumKey || 'MYoeS';
     var maxSizeOfDisplayedImage = options.maxSizeOfDisplayedImage || 3;
-    var viewDuration = options.viewDuration || 2000;
-    var fadeDuration = options.fadeDuration || 1000;
-    // non options
+    var viewDuration = options.viewDuration || 3000; // in milliseconds
+    var fadeDuration = options.fadeDuration || 2000;
     
+    // make sure we have a target div id, if not, get out
+    if (! targetId) {
+        return;
+    }
+    
+    // non options
     var galleryModel = {};
     var tweens = [];
     var imgStatus = {};
@@ -149,19 +157,31 @@ var smugal = function (options) {
     
         display();
     }
+    
+    function callScript (parameters, method) {
+        var postMethod = method || 'get';
+        var url = apiUrl;
+        for
+        var feedReq = new Request({
+            method : postMethod,
+            url : apiUrl
+        });
+    }
 
     window.addEvent('domready', function (e) {
-        var feedReq = new Request({
-            method : 'get',
-            url : albumUrl,
-            onSuccess : function (text, xml) {
-                setup(text);
-            }, 
-            onFailure : function (xhr) {
-                alert('failed:\n'+xhr);
-            }
-        });
-        var vars = testing ? '' : 'Type=gallery&Data='+albumId+'_'+albumKey;
-        feedReq.send(vars);
+        
+        // var feedReq = new Request({
+        //     method : 'get',
+        //     url : albumUrl,
+        //     onSuccess : function (text, xml) {
+        //         setup(text);
+        //     }, 
+        //     onFailure : function (xhr) {
+        //         alert('failed:\n'+xhr);
+        //     }
+        // });
+        // var vars = testing ? '' : 'Type=gallery&Data='+albumId+'_'+albumKey;
+        // alert(albumUrl + '?' + vars);
+        // feedReq.send(vars);
     });
 }

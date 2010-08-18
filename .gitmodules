@@ -1,0 +1,3 @@
+[submodule "modules/heyjacks"]
+	path = modules/heyjacks
+	url = git://github.com/efnx/heyjacks.git

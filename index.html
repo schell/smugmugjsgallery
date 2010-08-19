@@ -10,14 +10,18 @@
 	<link rel="stylesheet" href="smugal/smugal.css" type="text/css" media="screen" title="smugal style" charset="utf-8">
 	<script src="smugal/mootools-1.2.4-core.js" type="text/javascript" charset="utf-8"></script>
 	<script src="smugal/mootools-1.2.4.4-more.js" type="text/javascript" charset="utf-8"></script>
+	<script src="modules/heyjacks/heyjacks.js" type="text/javascript" charset="utf-8"></script>
 	<script src="smugal/smugal.js" type="text/javascript" charset="utf-8"></script>
 	<!-- Date: 2010-05-30 -->
 </head>
 <body>
 	<div id="smugmug_gallery">Smug mug gallery goes here...</div>
+	<pre id="output"></pre>
     <script type="text/javascript" charset="utf-8">
         smugal({
+			testing : true,
 			targetId : 'smugmug_gallery',
+			logId : 'output',
             viewDuration : 3000, // milliseconds
             fadeDuration : 2000,
             maxSizeOfDisplayedImage : 3

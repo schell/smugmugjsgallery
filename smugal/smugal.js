@@ -6,48 +6,44 @@
  *  @author Schell Scivally
  *  @since  Sun May 30 16:58:26 PDT 2010
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
-
-var smugal = function (options) {
+function smugal (options) {
     // options
     var apiUrl = 'http://api.smugmug.com/services/api/json/1.2.2/';
     var testing = options.testing || false;
     
     var targetId = options.targetId || false;
-    var albumUrl = options.albumUrl || '';
+    var logId = options.logId;
     var albumId = options.albumId || '11397881';
     var albumKey = options.albumKey || 'MYoeS';
     var maxSizeOfDisplayedImage = options.maxSizeOfDisplayedImage || 3;
     var viewDuration = options.viewDuration || 3000; // in milliseconds
     var fadeDuration = options.fadeDuration || 2000;
     
-    // make sure we have a target div id, if not, get out
-    if (! targetId) {
+    // make sure we have a target div id and heyjacks
+    if (! targetId || ! heyjacks) {
         return;
     }
     
     // non options
-    var galleryModel = {};
-    var tweens = [];
-    var imgStatus = {};
-    //--------------------------------------
-    //  Page elements
-    //--------------------------------------
-    var loadingDiv = new Element('div', {
-        id : 'loadingDiv',
-        text : 'loading smug mug gallery...'
-    });
+    var imageList;
+    var sessionId = '';
+    var target = $(targetId);
+    var logDiv = $(logId);
 
-    var mainDiv = new Element('div', {
-        id : 'mainDiv'
-    });
+    //--------------------------------------
+    //  Debugin
+    //--------------------------------------
+    function log (msg) {
+        if (testing) {
+            target.innerHTML = target.innerHTML + '<br>' + msg;
+        }
+    }
+    function error (msg) {
+        alert('smugal says: "' + msg + '"');
+    }
     //--------------------------------------
     //  Functions
     //--------------------------------------
-    function log (msg) {
-        if (window.console) {
-            console.log(msg);
-        }
-    }
     function transition () {
         var imgs = mainDiv.getElements('img');
         var out = transition.ndx;
@@ -134,42 +130,51 @@ var smugal = function (options) {
         downloadImages();
     }
 
-    function setup (atomFeed) {
-        var mediaGroupsMatch = atomFeed.match(/<media:group>/g);
-        var urlRegex = /<media:content[^>]*url="([^"]*)"/g;
-    
-        numImages = mediaGroupsMatch.length;
-        var imageName = '';
-        galleryModel.images = [];
-        while(match = urlRegex.exec(atomFeed)) {
-            var filenameSlash = match[1].lastIndexOf('/');
-            var newImageName = match[1].substring(0, filenameSlash);
-            if (newImageName != imageName) {
-                galleryModel.images.push({
-                    name : newImageName,
-                    urls : []
-                });
-                imageName = newImageName;
-            }
-            var currentImage = galleryModel.images[galleryModel.images.length - 1];
-            currentImage.urls.push(match[1]);
-        }
-    
-        display();
+    function getImageUrls (imageList) {
+        imageList;
     }
     
-    function callScript (parameters, method) {
-        var postMethod = method || 'get';
-        var url = apiUrl;
-        for
-        var feedReq = new Request({
-            method : postMethod,
-            url : apiUrl
-        });
+    function getAlbumImages () {
+        log('retrieving album image list');
+        heyjacks.call(apiUrl, 
+            {
+                method : 'smugmug.images.get',
+                SessionID : sessionId,
+                AlbumID : albumId,
+                AlbumKey : albumKey
+            },
+            function (json) {
+                if (json.stat == 'ok') {
+                    log('got list');
+                    getImageUrls(json.Album.Images);
+                } else {
+                    error('Could not retrieve image list.')
+                }
+            });
+    }
+    
+    function start () {
+        log('logging in anonymously');
+        heyjacks.call(apiUrl, 
+            {
+                method : 'smugmug.login.anonymously',
+                APIKey : 'LcSPLixdbyrPIbnXb8JporyNZci3z11C'
+            }, 
+            function (json) {
+                if (json.stat == 'ok') {
+                    sessionId = json.Login.Session.id;
+                    log('recieved session id: ' + sessionId);
+                    getAlbumImages();
+                } else {
+                    error('Could not retrieve session id');
+                }
+            }
+        );
     }
 
     window.addEvent('domready', function (e) {
         
+        start();
         // var feedReq = new Request({
         //     method : 'get',
         //     url : albumUrl,

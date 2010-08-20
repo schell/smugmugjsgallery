@@ -71,12 +71,12 @@ function smugal (options) {
     //  Debugin
     //--------------------------------------
     function log (msg) {
-        if (testing) {
+        if (testing && typeof console != 'undefined') {
             console.log(msg);
         }
     }
     function error (msg) {
-        if (testing) {
+        if (testing && typeof console != 'undefined') {
             console.warn('ERROR ' + msg);
         }
     }

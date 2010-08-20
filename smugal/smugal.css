@@ -13,9 +13,7 @@ body, html {
 	padding:0px;
 	background-color:#7F7F7F;
 }
-/* the main gallery div */
-#mainDiv {
-	position : absolute;
-	width : 100%;
-	height : 100%;
+
+/* put your custom css here */
+#smugmug_gallery {
 }

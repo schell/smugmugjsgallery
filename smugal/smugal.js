@@ -15,126 +15,136 @@ function smugal (options) {
     var logId = options.logId;
     var albumId = options.albumId || '11397881';
     var albumKey = options.albumKey || 'MYoeS';
-    var maxSizeOfDisplayedImage = options.maxSizeOfDisplayedImage || 3;
+    var size = options.size || 'Original';
     var viewDuration = options.viewDuration || 3000; // in milliseconds
     var fadeDuration = options.fadeDuration || 2000;
     
-    // make sure we have a target div id and heyjacks
-    if (! targetId || ! heyjacks) {
+    // make sure we have a target div id, go and heyjacks
+    if (!targetId || !go || !heyjacks) {
         return;
     }
     
     // non options
     var imageList;
+    var imgs = [];
+    var tweening = false;
     var sessionId = '';
     var target = $(targetId);
-    var logDiv = $(logId);
+    /* size should be nothing or one of the following:
+    X3Large
+    X2Large
+    XLarge
+    Large
+    Lightbox
+    Medium
+    Original
+    Small
+    Thumb
+    Tiny
+    */
+    var sizes = [
+        '',
+        'X3Large',
+        'X2Large',
+        'XLarge',
+        'Large',
+        'Lightbox',
+        'Medium',
+        'Original',
+        'Small',
+        'Thumb',
+        'Tiny'
+    ];
+    var n = sizes.length;
+    var sizedCorrectly = false;
+    for (var i = 0; i < n; i++) {
+        if (sizes[i] == size) {
+            sizedCorrectly = true;
+            break;
+        }
+    }
+    if (!sizedCorrectly) {
+        size = 'Original';
+    }
 
     //--------------------------------------
     //  Debugin
     //--------------------------------------
     function log (msg) {
         if (testing) {
-            target.innerHTML = target.innerHTML + '<br>' + msg;
+            console.log(msg);
         }
     }
     function error (msg) {
-        alert('smugal says: "' + msg + '"');
+        if (testing) {
+            console.warn('ERROR ' + msg);
+        }
     }
     //--------------------------------------
     //  Functions
     //--------------------------------------
-    function transition () {
-        var imgs = mainDiv.getElements('img');
-        var out = transition.ndx;
-        var inn = transition.ndx == tweens.length - 1 ? 0 : transition.ndx + 1;
-        var imgOut = $('img_' + out);
-        var inId = 'img_' + inn;
-        var imgIn = $(inId);
-    
-        transition.ndx = inn;
-        if (! transition.started) {
-            transition.started = true;
-            imgIn.setStyle('display', 'inline');
-            imgIn.position();
-            tweens[inn].start('opacity', 0, 1).chain(function () {
-                setTimeout(transition, viewDuration);
-            });
-        } else {
-            if (imgStatus[inId] === 'loading') {
-                imgStatus[inId] = 'waiting';
-                return;
-            }
-            tweens[out].start('opacity', 1, 0).chain(function () {
-                imgOut.setStyle('display', 'none');
-            });
-            imgIn.position();
-            imgIn.setStyle('display', 'inline');
-            tweens[inn].start('opacity', 0, 1).chain(function () {
-                setTimeout(transition, viewDuration);
-            });
+    function imgAfter (i) {
+        var oi = i;
+        var n = imgs.length;
+        if (i >= n - 1) {
+            i = -1;
         }
-    }
-    transition.started = false;
-    transition.ndx = -1;
-
-    function downloadImages () {
-        var n = galleryModel.images.length;
-    
-        var anotherImageLoaded = function (thatId) {
-            var id = this.id || thatId;
-            log(id);
-            var status = imgStatus[id];
-            imgStatus[id] = 'complete';
-            if (status === 'waiting') {
-                transition();
+        for (++i; i < n; i++) {
+            if (imgs[i]) {
+                return i;
             }
-        };
-
-        var firstImageLoaded = function () {
-            anotherImageLoaded(this.id);
-            loadingDiv.dispose();
-            transition();
-        };
+        }
+        return oi;
+    }
     
-        for (var i = 0; i < n; i++) {
-            var id = 'img_' + i;
-            imgStatus[id] = 'loading';
-            var maxSize = galleryModel.images[i].urls.length - 1;
-            var size = maxSize >= maxSizeOfDisplayedImage ? maxSizeOfDisplayedImage : maxSize;
-            log(size);
-            var src = galleryModel.images[i].urls[size];
-            var img = new Element('img', {
-                src : src, 
-                id : id,
-                styles : {
-                    border : '#000000 solid 1px',
-                    display : 'none'
-                },
-                events : {
-                    load : (i == 0 ? firstImageLoaded : anotherImageLoaded)
-                }
-            });
-            var tween = new Fx.Tween(img, {
+    function tweenIn (img) {
+        log('tweenIn');
+        if (!img.myTween) {
+            img.myTween = new Fx.Tween(img, {
                 duration : fadeDuration
             });
-            tween.set('opacity', 0);
-            tweens.push(tween);
-            img.inject(mainDiv);
         }
-    }
-
-    function display () {
-        loadingDiv.inject(mainDiv);
-        mainDiv.inject(document.body);
-        downloadImages();
-    }
-
-    function getImageUrls (imageList) {
-        imageList;
+        img.myTween.set('opacity', 0);
+        img.myTween.set('display', 'block');
+        img.inject(target);
+        img.myTween.start('opacity', 0, 1);
+        return img.myTween;
     }
     
-    function getAlbumImages () {
+    function tweenOut (img) {
+        log('tweenOut');
+        if (!img.myTween) {
+            img.myTween = new Fx.Tween(img, {
+                duration : fadeDuration
+            });
+        }
+        
+        img.myTween.start('opacity', 1, 0);
+        return img.myTween;
+    }
+    
+    function tween (ndx) {
+        var n = imgAfter(ndx);
+        log('tween ' + ndx + ' ' + n);
+        if (!imgs[ndx].myTween) {
+            tweenIn(imgs[ndx]).chain(function () {
+                setTimeout(function () {
+                    tween(n);
+                }, viewDuration);
+            });
+        } else {
+            tweenOut(imgs[ndx]).chain(function () {
+                imgs[ndx].myTween.set('display', 'none');
+                tweenIn(imgs[n]).chain(function () {
+                    setTimeout(function () {
+                        tween(n);
+                    }, viewDuration);
+                });
+            });
+        }
+    }
+    
+    function getAlbumImages (callback) {
         log('retrieving album image list');
         heyjacks.call(apiUrl, 
             {
@@ -146,14 +156,15 @@ function smugal (options) {
             function (json) {
                 if (json.stat == 'ok') {
                     log('got list');
-                    getImageUrls(json.Album.Images);
+                    imageList = json.Album.Images;
                 } else {
                     error('Could not retrieve image list.')
                 }
+                callback();
             });
     }
     
-    function start () {
+    function login (callback) {
         log('logging in anonymously');
         heyjacks.call(apiUrl, 
             {
@@ -164,29 +175,77 @@ function smugal (options) {
                 if (json.stat == 'ok') {
                     sessionId = json.Login.Session.id;
                     log('recieved session id: ' + sessionId);
-                    getAlbumImages();
                 } else {
                     error('Could not retrieve session id');
                 }
-            }
-        );
+                callback();
+            });
+    }
+    
+    function start () {
+        var seq = go(
+            login,
+            getAlbumImages,
+            // get each image in parallel and populate
+            // our gallery with downloaded images
+            function (callback) {
+                var n = imageList.length;
+                var aseq = go.together();
+                for (var i = 0; i < n; i++) {
+                    imgs.push(false);
+                    aseq.push(function (ndx) {
+                        var image = imageList[ndx];
+                        return function (next) {
+                            heyjacks.call(apiUrl,
+                            {
+                                method : 'smugmug.images.getURLs',
+                                SessionID : sessionId,
+                                ImageID : image.id,
+                                ImageKey : image.Key 
+                            },
+                            // once we have the image urls
+                            function (json) {
+                                if (json.stat == 'ok') {
+                                    log('got urls for image ' + ndx);
+                                    // download the image into an array of img tags
+                                    var img = new Element('img', {
+                                        src : json.Image[size+'URL'], 
+                                        id : 'img_'+ndx,
+                                        styles : {
+                                            border : '#000000 solid 1px',
+                                            display : 'none'
+                                        },
+                                        events : {
+                                            load : function () {
+                                                imgs[ndx] = this;
+                                                log('loaded img ' + ndx);
+                                                if (!tweening) {
+                                                    target.innerHTML = '';
+                                                    tweening = true;
+                                                    tween(ndx);
+                                                }
+                                                // callback to inc the aseq
+                                                next();
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    error('Could not retrieve url for image ' + ndx);
+                                }
+                            });
+                        }
+                    }(i));
+                }
+                aseq.push(function () {
+                    log('got all images');
+                });
+                aseq.start();
+            }).start();
+        
     }
 
     window.addEvent('domready', function (e) {
-        
+        go.error = error;
         start();
-        // var feedReq = new Request({
-        //     method : 'get',
-        //     url : albumUrl,
-        //     onSuccess : function (text, xml) {
-        //         setup(text);
-        //     }, 
-        //     onFailure : function (xhr) {
-        //         alert('failed:\n'+xhr);
-        //     }
-        // });
-        // var vars = testing ? '' : 'Type=gallery&Data='+albumId+'_'+albumKey;
-        // alert(albumUrl + '?' + vars);
-        // feedReq.send(vars);
     });
 }

@@ -1,3 +1,6 @@
 [submodule "modules/heyjacks"]
 	path = modules/heyjacks
 	url = git://github.com/efnx/heyjacks.git
+[submodule "modules/go"]
+	path = modules/go
+	url = git://github.com/efnx/go.git

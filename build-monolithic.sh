@@ -1,0 +1,1 @@
+cat ./smugal/mootools-1.2.4-core.js ./modules/go/go.js ./modules/heyjacks/heyjacks.js ./smugal/smugal.js > ./smugal/smugal-monolithic.js; 

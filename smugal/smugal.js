@@ -219,7 +219,6 @@ function smugal (options) {
                                         src : json.Image[imgSize+'URL'], 
                                         id : 'img_'+ndx,
                                         styles : {
-                                            border : '#000000 solid 1px',
                                             display : 'none'
                                         },
                                         events : {

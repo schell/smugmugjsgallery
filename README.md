@@ -59,3 +59,20 @@ The configuration options are listed below with their name, type and a descripti
 			
 	viewDuration - number - the length of time (in milliseconds) that each picture is shown at full opacity
 	fadeDuration - number - the length of time (in milliseconds) that each picture takes to fade in or out
+
+
+Further customization
+---------------------
+You can customize the gallery through css. All images are displayed inside the target div as img tags, so your css file could look something like this:
+
+	#theGalleryDivId {
+		width:100%;
+		height:100%;
+		background:#000000;
+	}
+
+	#theGalleryDivId img {
+		border:2px #FFFFFF solid;
+		margin:auto;
+	}
+	

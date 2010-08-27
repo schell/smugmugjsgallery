@@ -14,6 +14,13 @@ body, html {
 	background-color:#7F7F7F;
 }
 
-/* put your custom css here */
 #smugmug_gallery {
+	width:100%;
+	height:100%;
+	background:#000000;
+}
+
+#smugmug_gallery img {
+	border:2px #FFFFFF solid;
+	margin:auto;
 }

@@ -1,4 +1,4 @@
-Smug Mug JS Gallery v0.0.2
+Smug Mug JS Gallery v0.1.2
 ==========================
 This is a gallery viewer for smug mug galleries, written in javascript + mootools.
 
@@ -38,24 +38,24 @@ The configuration options are listed below with their name, type and a descripti
 	albumId - string - the album id of the album being shown 
 	albumKey - string - the album key of the album being shown
 	
-		A note about album id and key - they can be retreived from your gallery url. They are connected by an underscore '_' as it is in any SmugMug gallery url like in this example:
-		http://cmac.smugmug.com/gallery/2504559_f3ta9
-		2504559 is the albumId
-		f3ta9 is the albumKey (the key is case sensitive and you will encounter upper case characters in it)
+A note about album id and key - they can be retreived from your gallery url. They are connected by an underscore '_' as it is in any SmugMug gallery url like in this example:
+http://cmac.smugmug.com/gallery/2504559_f3ta9
+2504559 is the albumId
+f3ta9 is the albumKey (the key is case sensitive and you will encounter upper case characters in it)
 		
 	size - string - the image size the gallery should display. If the preferred size is not available the gallery will display the original size by default.
 	
-		A note about sizes - the size must be one of the following:
-			'X3Large'
-			'X2Large'
-			'XLarge'
-			'Large'
-			'Lightbox'
-			'Medium'
-			'Original'
-			'Small'
-			'Thumb'
-			'Tiny'
+A note about sizes - the size must be one of the following:
+'X3Large'
+'X2Large'
+'XLarge'
+'Large'
+'Lightbox'
+'Medium'
+'Original'
+'Small'
+'Thumb'
+'Tiny'
 			
 	viewDuration - number - the length of time (in milliseconds) that each picture is shown at full opacity
 	fadeDuration - number - the length of time (in milliseconds) that each picture takes to fade in or out

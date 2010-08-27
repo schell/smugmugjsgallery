@@ -1,7 +1,10 @@
 /** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *  smugal.js
- *  A javascript gallery for smug mug
- *  Copyright (c) 2010 Schell Scivally Enterprise. All rights reserved.
+ *  A javascript gallery for smug mug dot com
+ *  Copyright (c) 2010 New Skin Media. All rights reserved.
+ *  
+ *  Imagine a fearsomely comprehensive disclaimer of liability. 
+ *  Now fear, comprehensively.
  *
  *  @author Schell Scivally
  *  @since  Sun May 30 16:58:26 PDT 2010
@@ -12,7 +15,6 @@ function smugal (options) {
     var testing = options.testing || false;
     
     var targetId = options.targetId || false;
-    var logId = options.logId;
     var albumId = options.albumId || '11397881';
     var albumKey = options.albumKey || 'MYoeS';
     var size = options.size || 'Original';
@@ -30,6 +32,7 @@ function smugal (options) {
     var tweening = false;
     var sessionId = '';
     var target = $(targetId);
+    
     /* size should be nothing or one of the following:
     X3Large
     X2Large
@@ -208,8 +211,12 @@ function smugal (options) {
                                 if (json.stat == 'ok') {
                                     log('got urls for image ' + ndx);
                                     // download the image into an array of img tags
+                                    var imgSize = size;
+                                    if (!(size+'URL' in json.Image)) {
+                                        imgSize = 'Original';
+                                    }
                                     var img = new Element('img', {
-                                        src : json.Image[size+'URL'], 
+                                        src : json.Image[imgSize+'URL'], 
                                         id : 'img_'+ndx,
                                         styles : {
                                             border : '#000000 solid 1px',

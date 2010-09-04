@@ -1,6 +1,9 @@
 Smug Mug JS Gallery v0.1.2
 ==========================
-This is a gallery viewer for smug mug galleries, written in javascript + mootools.
+This is a gallery viewer for smug mug galleries, written in javascript + mootools. Two of three external libraries are git submodules, so if you wish to embed smugal using option 2 you'll have to download 'go' and 'heyjacks' with
+	git submodule init
+	git submodule update
+which will pull in the submodules from their repos.
 
 Use
 ---

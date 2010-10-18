@@ -34,7 +34,7 @@ Step 2: Initialize smugal with your configuration options (description of option
 
 Config options
 --------------
-The configuration options are listed below with their name, type and a description. All options are required EXCEPT targetId, albumId and albumKey. Image size is 'Original' by default.
+The configuration options are listed below with their name, type and a description. All options are *optional* EXCEPT targetId, albumId and albumKey. Image size is 'Original' by default.
 
 	testing - boolean (true or false) - if true, debugging messages will be output to the js console (don't use this if your browser doesn't have a js console)
 	targetId - string ('somestring') - the id of the div the gallery should be injected into (required)
